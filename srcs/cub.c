@@ -6,25 +6,38 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:11 by epetrill          #+#    #+#             */
-/*   Updated: 2020/02/23 05:11:10 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/02/25 00:19:06 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 
+void	free_tab(char **map)
+{
+	int i ;
+
+	i = 0;
+	while (map[i])
+	{
+		free(map[i]);
+		i++;
+	}
+	free(map[i]);
+	free(map);
+}
+
 int	main(int ac, char **av)
 {
-	t_mapinfo *info_map;
+//	t_mapinfo *info_map;
 	char **map;
 
 	map = NULL;
 	if (ac != 2)
-		return (ft_error("Wrong arg nbrs for ./cub\n"));
+		return (ft_error("Wrong arg nbrs for ./cub\n", map));
 	if (cpy_map(av[1],  map) == -1)
 		return (-1);
 	/*if (cleanmap( map) == -1)
 		return (-1);*/
-
 	return (0);
 }
 
@@ -33,20 +46,22 @@ int cpy_map(char *fichier, char **map)
 	int gnl_ret;
 	int fd;
 	int len;
-	
+
 	len = ft_strlen(fichier);
 	gnl_ret = 1;
-	map = malloc(1);
+	fd = 0;
+	if (!(map = ft_calloc(1, (sizeof(map)))))
+		return (ft_error("Issue during malloc map lines", map));
 	if (len < 5 || ft_strncmp(".cub", &fichier[len - 4], 4) != 0)
-		return (ft_error("Issue with the map name\n"));
+		return (ft_error("Issue with the map name\n", map));
 	len = 0;
 	if(!(fd = open(fichier, O_RDONLY)))
-		return (ft_error("Issue during file opening\n"));
+		return (ft_error("Issue during file opening\n", map));
 	while (gnl_ret)
 	{
 		gnl_ret = get_next_line(fd, &map[len]);
 		len++;
-		if(realloc_map(map, len) == -1)
+		if (realloc_map(map, len) == -1)
 			return (-1);
 	}
 	map[len] = NULL;
@@ -73,37 +88,49 @@ int	realloc_map(char **map, int size)
 	int i;
 
 	i = 0;
-	while (map[i])
-	{
-		tmp[i] = map[i];	
-		i++;
-	}
-	free(map);	
-	if(!(map = malloc(size + 1)))
-		return(ft_error("Issue during realloc map\n"));
+	if(!(tmp = ft_calloc(size + 1, sizeof(tmp))))
+		return (ft_error("Issue during realloc map\n", map));
+	tmp = NULL;
+	printf("1\n");
+	while (map[i++])
+		tmp[i] = ft_strdup(map[i]);
+	printf("a\n");
+	tmp[i] = NULL;
+	free_tab(map);
+	if(!(map = ft_calloc((size + 1), sizeof(map))))
+		return(ft_error("Issue during realloc map\n", map));
 	i = 0;
-	while(tmp[i])
+	while (tmp[i])
 	{
 		map[i] = tmp[i];
 		i++;
 	}
-	map[i] = NULL;
+	map[i] = ft_strdup(NULL);
+	free_tab(tmp);
 	return (0);
 }
-
-
-int init_mapinfo(t_mapinfo *pmap)
+int init_mapinfo(t_mapinfo *pinfo, char **map)
 {
 	t_mapinfo info;
 
-	if (!(pmap = malloc(sizeof(info))))
-		return (ft_error("Issue during struc info malloc\n"));
-	pmap = &info;
-	
+	if (!(pinfo = malloc(sizeof(info))))
+		return (ft_error("Issue during struc info malloc\n", map));
+	pinfo = &info;
+	info.res = NULL;
+	info.north = NULL;
+	info.south = NULL;
+	info.east = NULL;
+	info.west = NULL;
+	info.sprite = NULL;
+	info.floor = NULL;
+	info.ceiling = NULL;
+	return (0);
 }
 
-int ft_error(char *str)
+int ft_error(char *str, char **map)
 {
+	if (map)
+		free_tab(map);
 	printf("Error\n");
 	printf("%s", str);
 	return (-1);
@@ -150,5 +177,5 @@ int	check_error(t_error *list)
 	if (*list.check_ceiling)
 		return (ft_error("Ceiling texture undefined !\n"));
 	return (0);
-}*/
-
+}
+*/

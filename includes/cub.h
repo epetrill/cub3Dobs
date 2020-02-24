@@ -6,13 +6,15 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:30 by epetrill          #+#    #+#             */
-/*   Updated: 2020/02/23 05:09:28 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/02/24 23:45:55 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CUB_H
 # define CUB_H
 
+# include "../printf/includes/ft_printf.h"
+# include "get_next_line.h"
 # include "fcntl.h"
 # include "stdio.h"
 # include "stdlib.h"
@@ -34,7 +36,7 @@
 */
 typedef struct	s_mapinfo
 {
-	int* res;
+	int *res;
 	char *north;
 	char *south;
 	char *east;
@@ -48,6 +50,6 @@ int		cpy_map(char *fichier, char **map);
 int		realloc_map(char **map, int size);
 /*int		check_error(t_error *list);
 int		init_error(t_error *plist);*/
-int		ft_error(char *str);
+int		ft_error(char *str, char **map);
 void	aff_tab(char **map);
 #endif

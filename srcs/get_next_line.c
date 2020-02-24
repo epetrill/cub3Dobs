@@ -1,17 +1,16 @@
 /* ************************************************************************** */
-/*                                                          LE - /            */
-/*                                                              /             */
-/*   get_next_line.c                                  .::    .:/ .      .::   */
-/*                                                 +:+:+   +:    +:  +:+:+    */
-/*   By: epetrill <marvin@le-101.fr>                +:+   +:    +:    +:+     */
-/*                                                 #+#   #+    #+    #+#      */
-/*   Created: 2019/10/24 07:10:11 by epetrill     #+#   ##    ##    #+#       */
-/*   Updated: 2019/11/22 00:28:49 by epetrill    ###    #+. /#+    ###.fr     */
-/*                                                         /                  */
-/*                                                        /                   */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: epetrill <epetrill@student.le-101.fr>      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/10/24 07:10:11 by epetrill          #+#    #+#             */
+/*   Updated: 2020/02/24 21:08:14 by epetrill         ###   ########lyon.fr   */
+/*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/get_next_line.h"
 
 int	ft_read(int fd, char **res, char *buffer)
 {
@@ -52,7 +51,7 @@ int	ft_rest(char *res, char *buffer)
 	while (i-- > 0)
 		res[i] = buffer[i];
 	i = ft_strchr_mod(buffer);
-	if(i != -1)
+	if (i != -1)
 	{
 		buffer[i] == '\n' ? i++ : 0;
 		while (buffer[i])
