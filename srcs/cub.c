@@ -6,7 +6,7 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:11 by epetrill          #+#    #+#             */
-/*   Updated: 2020/02/25 00:19:06 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/02/26 01:41:55 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,26 +22,48 @@ void	free_tab(char **map)
 		free(map[i]);
 		i++;
 	}
-	free(map[i]);
 	free(map);
+}
+
+char	*ft_strdup_mod(const char *s1)
+{
+	char	*c_s1;
+	char	*start;
+
+	if (!s1)
+		return (NULL);
+	c_s1 = malloc(ft_strlen(s1) + 1);
+	if (!(start = c_s1))
+		return (NULL);
+	while (*s1)
+	{
+		if (*s1 != ' ')
+			*c_s1++ = *s1++;
+		else 
+			s1++;
+	}
+	*c_s1 = 0;
+	return (start);
 }
 
 int	main(int ac, char **av)
 {
 //	t_mapinfo *info_map;
 	char **map;
+	int i;
 
+	i = 0;
 	map = NULL;
 	if (ac != 2)
-		return (ft_error("Wrong arg nbrs for ./cub\n", map));
-	if (cpy_map(av[1],  map) == -1)
-		return (-1);
-	/*if (cleanmap( map) == -1)
-		return (-1);*/
+		return (ft_error("Wrong arg nbrs for ./cub\n", NULL));
+	if ((map = cpy_map(av[1],  map)) == NULL)
+		return (ft_error("", map));
+	aff_tab(map);
+	free_tab(map);
 	return (0);
 }
 
-int cpy_map(char *fichier, char **map)
+char **cpy_map(char *fichier, char **map)
 {
 	int gnl_ret;
 	int fd;
@@ -50,65 +72,56 @@ int cpy_map(char *fichier, char **map)
 	len = ft_strlen(fichier);
 	gnl_ret = 1;
 	fd = 0;
-	if (!(map = ft_calloc(1, (sizeof(map)))))
-		return (ft_error("Issue during malloc map lines", map));
+	if (!(map = malloc(2 * (sizeof(*map)))))
+		return (ft_perror("Issue during malloc map lines", NULL));
+	map[1] = NULL;
 	if (len < 5 || ft_strncmp(".cub", &fichier[len - 4], 4) != 0)
-		return (ft_error("Issue with the map name\n", map));
+		return (ft_perror("Issue with the map name\n", map));
 	len = 0;
-	if(!(fd = open(fichier, O_RDONLY)))
-		return (ft_error("Issue during file opening\n", map));
+	if (!(fd = open(fichier, O_RDONLY)))
+		return (ft_perror("Issue during file opening\n", map));
 	while (gnl_ret)
 	{
 		gnl_ret = get_next_line(fd, &map[len]);
 		len++;
-		if (realloc_map(map, len) == -1)
-			return (-1);
+		if ((map = realloc_map(map, len + 1)) == NULL)
+			return (NULL);
 	}
-	map[len] = NULL;
-	return (0);
+	printf("%d\n", len);
+	return (map);
 }
 
-//int cleanmap(char **map, 
 
 void aff_tab(char **map)
 {
 	int i;
 
 	i = 0;
-	while(map[i])
+	while (map[i] != NULL)
 	{
-		printf("%s", map[i]);
+		printf("%s\n", map[i]);
 		i++;
 	}
 }
 
-int	realloc_map(char **map, int size)
+char	**realloc_map(char **map, int size)
 {
 	char **tmp;
 	int i;
 
 	i = 0;
-	if(!(tmp = ft_calloc(size + 1, sizeof(tmp))))
-		return (ft_error("Issue during realloc map\n", map));
-	tmp = NULL;
-	printf("1\n");
-	while (map[i++])
-		tmp[i] = ft_strdup(map[i]);
-	printf("a\n");
-	tmp[i] = NULL;
-	free_tab(map);
-	if(!(map = ft_calloc((size + 1), sizeof(map))))
-		return(ft_error("Issue during realloc map\n", map));
-	i = 0;
-	while (tmp[i])
+	if (!(tmp = malloc((size + 1) * sizeof(*tmp))))
+		return (ft_perror("Issue during realloc map\n", map));
+	while (map[i] != NULL)
 	{
-		map[i] = tmp[i];
+		tmp[i] = ft_strdup_mod(map[i]);
 		i++;
 	}
-	map[i] = ft_strdup(NULL);
-	free_tab(tmp);
-	return (0);
+	tmp[i] = NULL;
+	free_tab(map);
+	return (tmp);
 }
+
 int init_mapinfo(t_mapinfo *pinfo, char **map)
 {
 	t_mapinfo info;
@@ -136,46 +149,11 @@ int ft_error(char *str, char **map)
 	return (-1);
 }
 
-/*int init_error(t_error *plist)
+char	**ft_perror(char *str, char **map)
 {
-	t_error list;
-
-	if (!(plist = malloc(sizeof(s_error))))
-		return (ft_error("Issue during malloc 1\n"));
-	plist = &list;
-	list.arg = 0;
-	list.cl_map = 0;
-	list.check_sprite = 0;
-	list.check_NO = 0;
-	list.check_SO = 0;
-	list.check_WE = 0;
-	list.check_EA = 0;
-	list.check_res = 0;
-	list.check_floor = 0;
-	list.check_ceiling = 0;
-	list.check_all = 0;
+	if (map)
+		free_tab(map);
+	printf("Error\n");
+	printf("%s", str);
+	return (NULL);
 }
-
-int	check_error(t_error *list)
-{
-	if (*list.cl_map)
-		return (ft_error("Map isn't valid !\n"));
-	if (*list.check_sprite)
-		return (ft_error("Sprite texture undefined !\n"));
-	if (*list.check_NO)
-		return (ft_error("North texture undefined !\n"));
-	if (*list.check_SO)
-		return (ft_error("South texture undefined !\n"));
-	if (*list.check_WE)
-		return (ft_error("West texture undefined !\n"));
-	if (*list.check_EA)
-		return (ft_error("East texture undefined !\n"));
-	if (*list.check_res)
-		return (ft_error("Resolution undefined !\n"));
-	if (*list.check_floor)
-		return (ft_error("Floor texture undefined !\n"));
-	if (*list.check_ceiling)
-		return (ft_error("Ceiling texture undefined !\n"));
-	return (0);
-}
-*/
