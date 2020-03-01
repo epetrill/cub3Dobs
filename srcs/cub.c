@@ -6,27 +6,24 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:11 by epetrill          #+#    #+#             */
-/*   Updated: 2020/03/01 06:50:14 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/03/01 08:00:33 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 
-void		free_tab(char **map,int choice)
+char **free_tab(char **map)
 {
-	int i ;
+	int i;
 
 	i = 0;
-	printf("1.choice ==%d\n", choice);
 	while (map[i])
 	{
-		printf("|%s|\n", map[i]);
 		free(map[i]);
 		i++;
 	}
-	printf("2.choice ==%d\n", choice);
-	if (choice == 1)
-		free(map);
+	free(map);
+	return (map);
 }
 
 char	*ft_strdup_mod(const char *s1)
@@ -63,7 +60,6 @@ int	main(int ac, char **av)
 	if ((map = cpy_map(av[1],  map)) == NULL)
 		return (0);
 	aff_tab(map);
-	free_tab(map, 0);
 	return (0);
 }
 
@@ -101,11 +97,14 @@ void aff_tab(char **map)
 	int i;
 
 	i = 0;
-	while (map[i][0] != '\0')
+	while (map[i][0])
 	{
-		ft_printf("%s\n", map[i]);
+		ft_printf("|%s|\n", map[i]);
+		free(map[i]);
 		i++;
 	}
+	free(map[i]);
+	free(map);
 }
 
 char	**realloc_map(char **map, int size)
@@ -114,7 +113,6 @@ char	**realloc_map(char **map, int size)
 	int i;
 
 	i = 0;
-	printf("A\n");
 	if (!(tmp = malloc((size + 1) * sizeof(*tmp))))
 		return (ft_perror("Issue during realloc map\n", map));
 	while (map[i])
@@ -122,9 +120,9 @@ char	**realloc_map(char **map, int size)
 		tmp[i] = ft_strdup_mod(map[i]);
 		i++;
 	}
+	tmp[size - 1] = NULL;;
 	tmp[size] = NULL;;
-	free_tab(map, 1);
-	printf("B\n");
+	map = free_tab(map);
 	return (tmp);
 }
 
@@ -148,8 +146,7 @@ int init_mapinfo(t_mapinfo *pinfo, char **map)
 
 int ft_error(char *str, char **map)
 {
-	if (map)
-		free_tab(map, 1);
+	free_tab(map);
 	printf("Error\n");
 	printf("%s", str);
 	return (-1);
@@ -157,8 +154,7 @@ int ft_error(char *str, char **map)
 
 char	**ft_perror(char *str, char **map)
 {
-	if (map)
-		free_tab(map, 1);
+	free_tab(map);
 	printf("Error\n");
 	printf("%s", str);
 	return (NULL);
