@@ -6,23 +6,27 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:11 by epetrill          #+#    #+#             */
-/*   Updated: 2020/02/26 01:41:55 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/03/01 06:50:14 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 
-void	free_tab(char **map)
+void		free_tab(char **map,int choice)
 {
 	int i ;
 
 	i = 0;
+	printf("1.choice ==%d\n", choice);
 	while (map[i])
 	{
+		printf("|%s|\n", map[i]);
 		free(map[i]);
 		i++;
 	}
-	free(map);
+	printf("2.choice ==%d\n", choice);
+	if (choice == 1)
+		free(map);
 }
 
 char	*ft_strdup_mod(const char *s1)
@@ -57,9 +61,9 @@ int	main(int ac, char **av)
 	if (ac != 2)
 		return (ft_error("Wrong arg nbrs for ./cub\n", NULL));
 	if ((map = cpy_map(av[1],  map)) == NULL)
-		return (ft_error("", map));
+		return (0);
 	aff_tab(map);
-	free_tab(map);
+	free_tab(map, 0);
 	return (0);
 }
 
@@ -74,6 +78,7 @@ char **cpy_map(char *fichier, char **map)
 	fd = 0;
 	if (!(map = malloc(2 * (sizeof(*map)))))
 		return (ft_perror("Issue during malloc map lines", NULL));
+	map[0] = NULL;
 	map[1] = NULL;
 	if (len < 5 || ft_strncmp(".cub", &fichier[len - 4], 4) != 0)
 		return (ft_perror("Issue with the map name\n", map));
@@ -87,7 +92,6 @@ char **cpy_map(char *fichier, char **map)
 		if ((map = realloc_map(map, len + 1)) == NULL)
 			return (NULL);
 	}
-	printf("%d\n", len);
 	return (map);
 }
 
@@ -97,9 +101,9 @@ void aff_tab(char **map)
 	int i;
 
 	i = 0;
-	while (map[i] != NULL)
+	while (map[i][0] != '\0')
 	{
-		printf("%s\n", map[i]);
+		ft_printf("%s\n", map[i]);
 		i++;
 	}
 }
@@ -110,15 +114,17 @@ char	**realloc_map(char **map, int size)
 	int i;
 
 	i = 0;
+	printf("A\n");
 	if (!(tmp = malloc((size + 1) * sizeof(*tmp))))
 		return (ft_perror("Issue during realloc map\n", map));
-	while (map[i] != NULL)
+	while (map[i])
 	{
 		tmp[i] = ft_strdup_mod(map[i]);
 		i++;
 	}
-	tmp[i] = NULL;
-	free_tab(map);
+	tmp[size] = NULL;;
+	free_tab(map, 1);
+	printf("B\n");
 	return (tmp);
 }
 
@@ -143,7 +149,7 @@ int init_mapinfo(t_mapinfo *pinfo, char **map)
 int ft_error(char *str, char **map)
 {
 	if (map)
-		free_tab(map);
+		free_tab(map, 1);
 	printf("Error\n");
 	printf("%s", str);
 	return (-1);
@@ -152,7 +158,7 @@ int ft_error(char *str, char **map)
 char	**ft_perror(char *str, char **map)
 {
 	if (map)
-		free_tab(map);
+		free_tab(map, 1);
 	printf("Error\n");
 	printf("%s", str);
 	return (NULL);

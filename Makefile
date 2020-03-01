@@ -6,7 +6,7 @@
 #    By: epetrill <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/15 20:38:23 by epetrill          #+#    #+#              #
-#    Updated: 2020/02/25 12:53:34 by epetrill         ###   ########lyon.fr    #
+#    Updated: 2020/03/01 06:16:59 by epetrill         ###   ########lyon.fr    #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ $(OBJDIR)		:
 		mkdir -p $@
 
 $(OBJDIR)/%.o	:	$(SRCDIR)/%.c $(HDRS)
-		$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<
+		$(CC) $(CFLAGS) $(IFLAGS) -g -c -o $@ $<
 
 clean			:
 		make clean -C $(PRF)
