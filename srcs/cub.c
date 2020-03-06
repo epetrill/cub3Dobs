@@ -6,13 +6,13 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:11 by epetrill          #+#    #+#             */
-/*   Updated: 2020/03/01 08:00:33 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/03/07 00:40:47 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "cub.h"
 
-char **free_tab(char **map)
+char		**free_tab(char **map)
 {
 	int i;
 
@@ -23,10 +23,11 @@ char **free_tab(char **map)
 		i++;
 	}
 	free(map);
+	map = NULL;
 	return (map);
 }
 
-char	*ft_strdup_mod(const char *s1)
+char		*ft_strdup_mod(const char *s1)
 {
 	char	*c_s1;
 	char	*start;
@@ -41,15 +42,14 @@ char	*ft_strdup_mod(const char *s1)
 		if (*s1 != ' ')
 			*c_s1++ = *s1++;
 		else 
-			s1++;
+			*c_s1++ = *s1++ + 17;
 	}
 	*c_s1 = 0;
 	return (start);
 }
 
-int	main(int ac, char **av)
+int			main(int ac, char **av)
 {
-//	t_mapinfo *info_map;
 	char **map;
 	int i;
 
@@ -63,7 +63,7 @@ int	main(int ac, char **av)
 	return (0);
 }
 
-char **cpy_map(char *fichier, char **map)
+char		**cpy_map(char *fichier, char **map)
 {
 	int gnl_ret;
 	int fd;
@@ -92,7 +92,7 @@ char **cpy_map(char *fichier, char **map)
 }
 
 
-void aff_tab(char **map)
+void		aff_tab(char **map)
 {
 	int i;
 
@@ -107,7 +107,7 @@ void aff_tab(char **map)
 	free(map);
 }
 
-char	**realloc_map(char **map, int size)
+char		**realloc_map(char **map, int size)
 {
 	char **tmp;
 	int i;
@@ -120,13 +120,13 @@ char	**realloc_map(char **map, int size)
 		tmp[i] = ft_strdup_mod(map[i]);
 		i++;
 	}
-	tmp[size - 1] = NULL;;
-	tmp[size] = NULL;;
+	tmp[size - 1] = NULL;
+	tmp[size] = NULL;
 	map = free_tab(map);
 	return (tmp);
 }
 
-int init_mapinfo(t_mapinfo *pinfo, char **map)
+int			init_mapinfo(t_mapinfo *pinfo, char **map)
 {
 	t_mapinfo info;
 
@@ -144,17 +144,19 @@ int init_mapinfo(t_mapinfo *pinfo, char **map)
 	return (0);
 }
 
-int ft_error(char *str, char **map)
+int			ft_error(char *str, char **map)
 {
-	free_tab(map);
+	if (map)
+		free_tab(map);
 	printf("Error\n");
 	printf("%s", str);
 	return (-1);
 }
 
-char	**ft_perror(char *str, char **map)
+char		**ft_perror(char *str, char **map)
 {
-	free_tab(map);
+	if (map)
+		free_tab(map);
 	printf("Error\n");
 	printf("%s", str);
 	return (NULL);
