@@ -6,11 +6,11 @@
 /*   By: epetrill <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/22 22:23:11 by epetrill          #+#    #+#             */
-/*   Updated: 2020/03/07 00:40:47 by epetrill         ###   ########lyon.fr   */
+/*   Updated: 2020/03/11 01:43:53 by epetrill         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "cub.h"
+#include "../includes/cub.h"
 
 char		**free_tab(char **map)
 {
@@ -38,14 +38,63 @@ char		*ft_strdup_mod(const char *s1)
 	if (!(start = c_s1))
 		return (NULL);
 	while (*s1)
-	{
-		if (*s1 != ' ')
-			*c_s1++ = *s1++;
-		else 
-			*c_s1++ = *s1++ + 17;
-	}
+		*c_s1++ = *s1++;
 	*c_s1 = 0;
 	return (start);
+}
+
+int		isparam(char *str)
+{
+	int i;
+
+	i = 0;
+	if ((str[i] == 'R' && str[i + 1] == ' '))
+		return (3);
+	if ((str[i] == 'C' && str[i + 1] == ' '))
+		return (1);
+	if ((str[i] == 'F' && str[i + 1] == ' '))
+		return (1);
+	if ((str[i] == 'S' && str[i + 1] == ' '))
+		return (2);
+	if ((str[i] == 'N' && str[i + 1] == 'O' && str[i + 2] == ' '))
+		return (2);
+	if ((str[i] == 'S' && str[i + 1] == 'O' && str[i + 2] == ' '))
+		return (2);
+	if ((str[i] == 'W' && str[i + 1] == 'E' && str[i + 2] == ' '))
+		return (2);
+	if ((str[i] == 'E' && str[i + 1] == 'A' && str[i + 2] == ' '))
+		return (2);
+	return (0);
+}
+
+int param(char *str)
+{
+	int ret;
+
+	ret = isparam(str);
+	if (ret == 1)
+	{
+		str++;
+		while (*str == ' ')
+		{
+			
+		}
+	}
+	return (0);	
+}
+
+char		**mapprocessing(char **map, t_mapinfo *info)
+{
+	int i;
+
+	i = 0;
+	while (map[i])
+	{
+		
+
+		i++;
+	}
+	return (map);
 }
 
 int			main(int ac, char **av)
@@ -59,6 +108,7 @@ int			main(int ac, char **av)
 		return (ft_error("Wrong arg nbrs for ./cub\n", NULL));
 	if ((map = cpy_map(av[1],  map)) == NULL)
 		return (0);
+//	map = mapprocessing(map);
 	aff_tab(map);
 	return (0);
 }
@@ -97,7 +147,7 @@ void		aff_tab(char **map)
 	int i;
 
 	i = 0;
-	while (map[i][0])
+	while (map[i])
 	{
 		ft_printf("|%s|\n", map[i]);
 		free(map[i]);

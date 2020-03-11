@@ -1,3 +1,12 @@
+R 2000 2000
+C 100 100 100
+F 200 200 200
+NO ./path
+SO ./path
+WE ./path
+EA ./path
+S ./path
+
 1          11111
 1S10        1
 10                   10 1
